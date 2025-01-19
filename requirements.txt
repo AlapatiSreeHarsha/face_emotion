@@ -9,3 +9,4 @@ imageio[ffmpeg]
 requests
 tqdm
 Pillow
+deepface
