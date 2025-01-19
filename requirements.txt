@@ -11,3 +11,4 @@ tqdm
 Pillow
 deepface
 tensorflow
+tf-keras
