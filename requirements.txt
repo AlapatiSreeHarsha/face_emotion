@@ -5,3 +5,7 @@ fer
 numpy
 tensorflow
 moviepy
+imageio[ffmpeg]
+requests
+tqdm
+Pillow
