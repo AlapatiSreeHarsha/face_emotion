@@ -40,44 +40,23 @@ def process_frame(frame):
     return frame
 
 # Streamlit Web App UI
-st.title("Live People Detection and Emotion Tracking")
+st.title("People Detection and Emotion Tracking")
 
-# Add buttons to start and stop detection
-start_button = st.button("Start Detection")
-stop_button = st.button("Stop Detection")
+# Upload button for image
+uploaded_image = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
-# Initialize an empty container for displaying the webcam feed
-frame_container = st.empty()
-
-# Control detection state
-if "run" not in st.session_state:
-    st.session_state.run = False
-
-if start_button:
-    st.session_state.run = True
-
-if stop_button:
-    st.session_state.run = False
-
-if st.session_state.run:
-    # Open the webcam for live video
-    cap = cv2.VideoCapture(3)
-
-    while st.session_state.run:
-        ret, frame = cap.read()
-        if not ret:
-            st.write("Error: Unable to access webcam.")
-            break
-        
-        # Process the frame (detect faces and emotions)
-        processed_frame = process_frame(frame)
-        
-        # Convert frame to RGB (Streamlit requires RGB format)
-        frame_rgb = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
-        
-        # Display the processed frame in Streamlit
-        frame_container.image(frame_rgb, channels="RGB", use_column_width=True)
+if uploaded_image is not None:
+    # Read the uploaded image
+    img = np.array(bytearray(uploaded_image.read()), dtype=np.uint8)
+    frame = cv2.imdecode(img, cv2.IMREAD_COLOR)
     
-    cap.release()
+    # Process the frame (detect faces and emotions)
+    processed_frame = process_frame(frame)
+    
+    # Convert frame to RGB (Streamlit requires RGB format)
+    frame_rgb = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
+    
+    # Display the processed frame in Streamlit
+    st.image(frame_rgb, channels="RGB", use_column_width=True)
 else:
-    st.write("Click 'Start Detection' to begin!")
+    st.write("Upload an image to begin detection.")
