@@ -61,7 +61,7 @@ if stop_button:
 
 if st.session_state.run:
     # Open the webcam for live video
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(3)
 
     while st.session_state.run:
         ret, frame = cap.read()
