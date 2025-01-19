@@ -1,10 +1,7 @@
 import streamlit as st
 import cv2
 import numpy as np
-from fer import FER  # Import FER for emotion recognition
-
-# Initialize the FER detector
-detector = FER()
+from deepface import DeepFace  # Using DeepFace for emotion recognition
 
 # Load the face cascade for detecting faces
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -21,13 +18,14 @@ def detect_faces_and_emotions(frame):
         # Extract face region
         face = frame[y:y+h, x:x+w]
         
-        # Use FER library to detect the emotion
-        emotion, score = detector.top_emotion(face)
+        # Use DeepFace to detect the emotion
+        result = DeepFace.analyze(face, actions=['emotion'], enforce_detection=False)
+        emotion = result[0]['dominant_emotion']
+        score = result[0]['emotion'][emotion]
         
         # Draw a rectangle around the face and display emotion
         cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
-        if score is not None:
-            cv2.putText(frame, f"{emotion} ({score*100:.1f}%)", (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+        cv2.putText(frame, f"{emotion} ({score*100:.1f}%)", (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
     
     return frame, num_people
 
